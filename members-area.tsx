@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -41,9 +41,33 @@ interface ComponentProps {
   userData: UserData | null
 }
 
-export default function Component({ userEmail, userData }: ComponentProps) {
+export default function Component({ userEmail, userData: initialUserData }: ComponentProps) {
+  const [userData, setUserData] = useState<UserData | null>(initialUserData)
   const [selectedCategory, setSelectedCategory] = useState("todos")
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const fetchUserData = async (email: string) => {
+    try {
+      const response = await fetch(`https://area-de-membros-backend.g8hlwx.easypanel.host/buscardados/${encodeURIComponent(email)}`)
+      const fetchedData: UserData = await response.json()
+      setUserData(fetchedData)
+      localStorage.setItem("userData", JSON.stringify(fetchedData))
+      localStorage.setItem("userDataTimestamp", new Date().getTime().toString())
+    } catch (err) {
+      console.error("Erro ao buscar dados do usuário:", err)
+    }
+  }
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("verifiedEmail")
+    const timestamp = localStorage.getItem("userDataTimestamp")
+    const now = new Date().getTime()
+    const sevenDays = 7 * 24 * 60 * 60 * 1000
+
+    if (storedEmail && (!timestamp || now - parseInt(timestamp) > sevenDays)) {
+      fetchUserData(storedEmail)
+    }
+  }, [])
 
   const modules = [
     {
@@ -79,38 +103,21 @@ export default function Component({ userEmail, userData }: ComponentProps) {
 
   const categories = [
     { id: "todos", name: "Todos os Módulos", icon: BookOpen, count: modules.length },
-    {
-      id: "escola",
-      name: "Escola de Resina",
-      icon: Droplet,
-      count: modules.filter((m) => m.category === "escola").length,
-    },
-    {
-      id: "modelos",
-      name: "Modelos Exclusivos",
-      icon: Package,
-      count: modules.filter((m) => m.category === "modelos").length,
-    },
-    {
-      id: "fornecedores",
-      name: "Fornecedores",
-      icon: Users,
-      count: modules.filter((m) => m.category === "fornecedores").length,
-    },
+    { id: "escola", name: "Escola de Resina", icon: Droplet, count: modules.filter((m) => m.category === "escola").length },
+    { id: "modelos", name: "Modelos Exclusivos", icon: Package, count: modules.filter((m) => m.category === "modelos").length },
+    { id: "fornecedores", name: "Fornecedores", icon: Users, count: modules.filter((m) => m.category === "fornecedores").length },
   ]
 
-  const filteredModules =
-    selectedCategory === "todos" ? modules : modules.filter((module) => module.category === selectedCategory)
+  const filteredModules = selectedCategory === "todos" ? modules : modules.filter((m) => m.category === selectedCategory)
 
   const handleLogout = () => {
     localStorage.removeItem("verifiedEmail")
     localStorage.removeItem("userData")
+    localStorage.removeItem("userDataTimestamp")
     window.location.reload()
   }
 
-  const handleAccessClick = (driveLink: string) => {
-    window.open(driveLink, "_blank")
-  }
+  const handleAccessClick = (driveLink: string) => window.open(driveLink, "_blank")
 
   return (
     <div className="min-h-screen bg-background">
@@ -179,9 +186,7 @@ export default function Component({ userEmail, userData }: ComponentProps) {
                   >
                     <Icon className="mr-2 h-4 w-4" />
                     <span className="truncate">{category.name}</span>
-                    <Badge variant="secondary" className="ml-auto text-xs">
-                      {category.count}
-                    </Badge>
+                    <Badge variant="secondary" className="ml-auto text-xs">{category.count}</Badge>
                   </Button>
                 )
               })}
@@ -189,95 +194,45 @@ export default function Component({ userEmail, userData }: ComponentProps) {
           </div>
         </aside>
 
-        {/* Overlay para mobile */}
-        {sidebarOpen && (
-          <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setSidebarOpen(false)} />
-        )}
+        {/* Overlay mobile */}
+        {sidebarOpen && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
         {/* Main Content */}
         <main className="flex-1 p-6">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold">
-              {selectedCategory === "todos"
-                ? "Todos os Módulos"
-                : categories.find((c) => c.id === selectedCategory)?.name}
-            </h1>
+            <h1 className="text-2xl font-bold">{selectedCategory === "todos" ? "Todos os Módulos" : categories.find((c) => c.id === selectedCategory)?.name}</h1>
             <p className="text-muted-foreground">
-              {filteredModules.length} módulo{filteredModules.length !== 1 ? "s" : ""} disponível
-              {filteredModules.length !== 1 ? "is" : ""}
+              {filteredModules.length} módulo{filteredModules.length !== 1 ? "s" : ""} disponível{filteredModules.length !== 1 ? "s" : ""}
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredModules.map((module) => (
-              <Card
-                key={module.id}
-                className={`overflow-hidden hover:shadow-lg transition-shadow ${
-                  module.status === "bloqueado" ? "opacity-60" : ""
-                }`}
-              >
+              <Card key={module.id} className={`overflow-hidden hover:shadow-lg transition-shadow ${module.status === "bloqueado" ? "opacity-60" : ""}`}>
                 <div className="aspect-video relative">
-                  <img
-                    src={module.thumbnail || "/placeholder.svg"}
-                    alt={module.title}
-                    className={`object-cover w-full h-full ${module.status === "bloqueado" ? "grayscale" : ""}`}
-                  />
+                  <img src={module.thumbnail || "/placeholder.svg"} alt={module.title} className={`object-cover w-full h-full ${module.status === "bloqueado" ? "grayscale" : ""}`} />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                    {module.status === "bloqueado" ? (
-                      <Lock className="h-8 w-8 text-white" />
-                    ) : (
-                      <Play className="h-8 w-8 text-white" />
-                    )}
+                    {module.status === "bloqueado" ? <Lock className="h-8 w-8 text-white" /> : <Play className="h-8 w-8 text-white" />}
                   </div>
-                  <Badge
-                    className="absolute top-2 right-2"
-                    variant={module.status === "disponivel" ? "default" : "secondary"}
-                    style={module.status === "disponivel" ? { backgroundColor: "#9333ea", color: "white" } : {}}
-                  >
-                    {module.status === "disponivel" ? (
-                      <>
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Disponível
-                      </>
-                    ) : (
-                      <>
-                        <Lock className="w-3 h-3 mr-1" />
-                        Bloqueado
-                      </>
-                    )}
+                  <Badge className="absolute top-2 right-2" variant={module.status === "disponivel" ? "default" : "secondary"} style={module.status === "disponivel" ? { backgroundColor: "#9333ea", color: "white" } : {}}>
+                    {module.status === "disponivel" ? <><CheckCircle className="w-3 h-3 mr-1" />Disponível</> : <><Lock className="w-3 h-3 mr-1" />Bloqueado</>}
                   </Badge>
                 </div>
 
                 <CardHeader className="pb-2">
-                  <CardTitle
-                    className={`line-clamp-1 text-base ${module.status === "bloqueado" ? "text-gray-500" : ""}`}
-                  >
-                    {module.title}
-                  </CardTitle>
-                  <CardDescription
-                    className={`line-clamp-2 text-sm ${module.status === "bloqueado" ? "text-gray-400" : ""}`}
-                  >
-                    {module.description}
-                  </CardDescription>
+                  <CardTitle className={`line-clamp-1 text-base ${module.status === "bloqueado" ? "text-gray-500" : ""}`}>{module.title}</CardTitle>
+                  <CardDescription className={`line-clamp-2 text-sm ${module.status === "bloqueado" ? "text-gray-400" : ""}`}>{module.description}</CardDescription>
                 </CardHeader>
 
                 <CardContent>
                   <div className="space-y-3">
                     {module.status === "bloqueado" ? (
-                      <Button
-                        className="w-full bg-purple-600 hover:bg-purple-700"
-                        size="sm"
-                        onClick={() => window.open(module.paymentLink, "_blank")}
-                      >
+                      <Button className="w-full bg-purple-600 hover:bg-purple-700" size="sm" onClick={() => window.open(module.paymentLink, "_blank")}>
                         <ShoppingCart className="mr-2 h-4 w-4" />
                         Comprar Acesso
                       </Button>
                     ) : (
-                      <Button
-                        className="w-full bg-purple-600 hover:bg-purple-700"
-                        size="sm"
-                        onClick={() => handleAccessClick(module.driveLink)}
-                      >
+                      <Button className="w-full bg-purple-600 hover:bg-purple-700" size="sm" onClick={() => handleAccessClick(module.driveLink)}>
                         Acessar
                       </Button>
                     )}
