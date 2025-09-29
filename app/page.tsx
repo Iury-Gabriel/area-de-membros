@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import Component from "../members-area"
 import { Button } from "@/components/ui/button"
@@ -30,7 +29,11 @@ export default function Page() {
   useEffect(() => {
     const verifiedEmail = localStorage.getItem("verifiedEmail")
     const storedUserData = localStorage.getItem("userData")
-    if (verifiedEmail && storedUserData) {
+    const timestamp = localStorage.getItem("userDataTimestamp")
+    const now = new Date().getTime()
+    const sevenDays = 7 * 24 * 60 * 60 * 1000
+
+    if (verifiedEmail && storedUserData && timestamp && now - parseInt(timestamp) <= sevenDays) {
       setIsVerified(true)
       setEmail(verifiedEmail)
       setUserData(JSON.parse(storedUserData))
@@ -46,9 +49,7 @@ export default function Page() {
     try {
       const verifyResponse = await fetch("https://area-de-membros-backend.g8hlwx.easypanel.host/verificaremail", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       })
 
@@ -60,8 +61,11 @@ export default function Page() {
         )
         const fetchedUserData: UserData = await userDataResponse.json()
 
+        const now = new Date().getTime()
         localStorage.setItem("verifiedEmail", email)
         localStorage.setItem("userData", JSON.stringify(fetchedUserData))
+        localStorage.setItem("userDataTimestamp", now.toString())
+
         setUserData(fetchedUserData)
         setIsVerified(true)
       } else {
