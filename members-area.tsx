@@ -63,7 +63,7 @@ export default function Component({ userEmail, userData }: ComponentProps) {
       thumbnail: userData?.produto2 ? "/images/modelos-exclusivos.png" : "/images/modelos-exclusivos-locked.png",
       status: userData?.produto2 ? "disponivel" : "bloqueado",
       driveLink: "https://drive.google.com/open?id=1UtMz-mABw_dkIGnyhzLgLIK3Qwv5AUpB&usp=drive_fs",
-      paymentLink: "https://seu-link-de-pagamento.com/modelos-exclusivos",
+      paymentLink: "https://escoladeresina.pay.yampi.com.br/r/9UL8SD1OFX",
     },
     {
       id: 3,
@@ -73,7 +73,7 @@ export default function Component({ userEmail, userData }: ComponentProps) {
       thumbnail: userData?.produto3 ? "/images/fornecedores-resina.png" : "/images/fornecedores-resina-locked.png",
       status: userData?.produto3 ? "disponivel" : "bloqueado",
       driveLink: "https://drive.google.com/open?id=1Q1nGNLreLHgKFCqSBJlIGkta7NWPw_JS&usp=drive_fs",
-      paymentLink: "https://seu-link-de-pagamento.com/fornecedores",
+      paymentLink: "https://escoladeresina.pay.yampi.com.br/r/NQIMJ4VI2A",
     },
   ]
 
