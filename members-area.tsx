@@ -59,15 +59,11 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
   }
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem("verifiedEmail")
-    const timestamp = localStorage.getItem("userDataTimestamp")
-    const now = new Date().getTime()
-    const sevenDays = 7 * 24 * 60 * 60 * 1000
-
-    if (storedEmail && (!timestamp || now - parseInt(timestamp) > sevenDays)) {
-      fetchUserData(storedEmail)
-    }
-  }, [])
+  const storedEmail = localStorage.getItem("verifiedEmail")
+  if (storedEmail) {
+    fetchUserData(storedEmail)
+  }
+}, [])
 
   const modules = [
     {
