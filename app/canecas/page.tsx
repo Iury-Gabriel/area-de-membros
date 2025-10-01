@@ -27,9 +27,9 @@ export default function Page() {
   const [userData, setUserData] = useState<UserData | null>(null)
 
   useEffect(() => {
-    const verifiedEmail = localStorage.getItem("verifiedEmail")
-    const storedUserData = localStorage.getItem("userData")
-    const timestamp = localStorage.getItem("userDataTimestamp")
+    const verifiedEmail = localStorage.getItem("verifiedEmailCanecas")
+    const storedUserData = localStorage.getItem("userDataCanecas")
+    const timestamp = localStorage.getItem("userDataTimestampCanecas")
     const now = new Date().getTime()
     const sevenDays = 7 * 24 * 60 * 60 * 1000
 
@@ -62,9 +62,9 @@ export default function Page() {
         const fetchedUserData: UserData = await userDataResponse.json()
 
         const now = new Date().getTime()
-        localStorage.setItem("verifiedEmail", email)
-        localStorage.setItem("userData", JSON.stringify(fetchedUserData))
-        localStorage.setItem("userDataTimestamp", now.toString())
+        localStorage.setItem("verifiedEmailCanecas", email)
+        localStorage.setItem("userDataCanecas", JSON.stringify(fetchedUserData))
+        localStorage.setItem("userDataTimestampCanecas", now.toString())
 
         setUserData(fetchedUserData)
         setIsVerified(true)

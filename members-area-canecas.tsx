@@ -51,15 +51,15 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
       const response = await fetch(`https://area-de-membros-backend.g8hlwx.easypanel.host/canecas/buscardados/${encodeURIComponent(email)}`)
       const fetchedData: UserData = await response.json()
       setUserData(fetchedData)
-      localStorage.setItem("userData", JSON.stringify(fetchedData))
-      localStorage.setItem("userDataTimestamp", new Date().getTime().toString())
+      localStorage.setItem("userDataCanecas", JSON.stringify(fetchedData))
+      localStorage.setItem("userDataTimestampCanecas", new Date().getTime().toString())
     } catch (err) {
       console.error("Erro ao buscar dados do usuário:", err)
     }
   }
 
   useEffect(() => {
-  const storedEmail = localStorage.getItem("verifiedEmail")
+  const storedEmail = localStorage.getItem("verifiedEmailCanecas")
   if (storedEmail) {
     fetchUserData(storedEmail)
   }
@@ -127,9 +127,9 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
   const filteredModules = selectedCategory === "todos" ? modules : modules.filter((m) => m.category === selectedCategory)
 
   const handleLogout = () => {
-    localStorage.removeItem("verifiedEmail")
-    localStorage.removeItem("userData")
-    localStorage.removeItem("userDataTimestamp")
+    localStorage.removeItem("verifiedEmailCanecas")
+    localStorage.removeItem("userDataCanecas")
+    localStorage.removeItem("userDataTimestampCanecas")
     window.location.reload()
   }
 
