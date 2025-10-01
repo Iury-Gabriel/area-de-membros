@@ -16,6 +16,8 @@ interface UserData {
   produto1: boolean
   produto2: boolean
   produto3: boolean
+  produto4: boolean
+  produto5: boolean
 }
 
 export default function Page() {

@@ -35,6 +35,8 @@ interface UserData {
   produto1: boolean
   produto2: boolean
   produto3: boolean
+  produto4: boolean
+  produto5: boolean
 }
 
 interface ComponentProps {
@@ -104,8 +106,8 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
       title: "KIT +40.000 ESTAMPAS PARA CAMISAS",
       description: "Estampas exclusivas para personalizar suas camisetas e se destacar no mercado",
       category: "camisas",
-      thumbnail: userData?.produto3 ? "/images/estampascamisas.png" : "/images/bloqueadocamisas.png",
-      status: userData?.produto3 ? "disponivel" : "bloqueado",
+      thumbnail: userData?.produto4 ? "/images/estampascamisas.png" : "/images/bloqueadocamisas.png",
+      status: userData?.produto4 ? "disponivel" : "bloqueado",
       driveLink: "https://drive.google.com/drive/folders/1ixZsbSU66l07gddQrIZdpxXxhQHZCmRj",
       paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/GIY20ZCL4A",
     },
@@ -114,8 +116,8 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
       title: "Kit Estampas +7.000 para Almofadas",
       description: "Estampas exclusivas para personalizar suas camisetas e se destacar no mercado",
       category: "almofadas",
-      thumbnail: userData?.produto3 ? "/images/kitalmofadas.png" : "/images/bloqueadoalmofadas.png",
-      status: userData?.produto3 ? "disponivel" : "bloqueado",
+      thumbnail: userData?.produto5 ? "/images/kitalmofadas.png" : "/images/bloqueadoalmofadas.png",
+      status: userData?.produto5 ? "disponivel" : "bloqueado",
       driveLink: "https://drive.google.com/drive/folders/1m7wzLnLfMrERTD_RA_3977neBEEgQ9gJ?hl=pt-br",
       paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/6J0Q2NRCW9",
     },
