@@ -25,6 +25,7 @@ import {
   Droplet,
   Package,
   Users,
+  MessageCircle,
 } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 
@@ -48,8 +49,7 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
   const [userData, setUserData] = useState<UserData | null>(initialUserData)
   const [selectedCategory, setSelectedCategory] = useState("todos")
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
-  const [modalOpen, setModalOpen] = useState(false) // Modal controle para produto 1
+  const [modalOpen, setModalOpen] = useState(false)
 
   const fetchUserData = async (email: string) => {
     try {
@@ -64,32 +64,32 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
   }
 
   useEffect(() => {
-  const storedEmail = localStorage.getItem("verifiedEmailCanecas")
-  if (storedEmail) {
-    fetchUserData(storedEmail)
-  }
-}, [])
+    const storedEmail = localStorage.getItem("verifiedEmailCanecas")
+    if (storedEmail) {
+      fetchUserData(storedEmail)
+    }
+  }, [])
 
   const modules = [
     {
       id: 1,
-      title: "+45.000 ARTES PARA CANECAS PERSONALIZADAS",
-      description: "Acesso imediato a mais de 45.000 artes exclusivas para personalizar suas canecas",
+      title: "Pacote Premium",
+      description: "+45.000 ARTES PARA CANECAS PERSONALIZADAS",
       category: "canecas",
       thumbnail: userData?.produto1 ? "/images/45milartes.png" : "/images/bloqueado45mil.png",
       status: userData?.produto1 ? "disponivel" : "bloqueado",
-      driveLink: "https://drive.google.com/drive/folders/16XuEWGhPfkgG8XP4G8sgafXBRFsc0QJA?usp=sharing", // não será usado direto
-      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/NFS5W5EYL3",
+      driveLink: "https://drive.google.com/drive/folders/16XuEWGhPfkgG8XP4G8sgafXBRFsc0QJA?usp=sharing",
+      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/NFS5W5EYL3?utm_source=app",
     },
     {
       id: 2,
-      title: "+5.000 ARTES PARA CANECAS PERSONALIZADAS",
-      description: "Artes exclusivas e atualizadas mensalmente para você se destacar no mercado",
+      title: "Pacote Básico",
+      description: "+5.000 ARTES PARA CANECAS PERSONALIZADAS",
       category: "canecas2",
       thumbnail: userData?.produto2 ? "/images/5milartes.png" : "/images/bloqueado5mil.png",
       status: userData?.produto2 ? "disponivel" : "bloqueado",
       driveLink: "https://drive.google.com/drive/u/1/folders/1zvEZPrFXOy9XRXmFklw6TUAvTKSBXt-6",
-      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/P7QWRGNQDB",
+      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/P7QWRGNQDB?utm_source=app",
     },
     {
       id: 3,
@@ -99,7 +99,7 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
       thumbnail: userData?.produto3 ? "/images/artes3d.png" : "/images/bloqueado3d.png",
       status: userData?.produto3 ? "disponivel" : "bloqueado",
       driveLink: "https://drive.google.com/drive/folders/1-gZqQ92il-DX-KNYV6C6QjFm9M8N6t1K?hl=pt-br",
-      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/SYU9D8TO4I",
+      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/SYU9D8TO4I?utm_source=app",
     },
     {
       id: 4,
@@ -109,7 +109,7 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
       thumbnail: userData?.produto4 ? "/images/estampascamisas.png" : "/images/bloqueadocamisas.png",
       status: userData?.produto4 ? "disponivel" : "bloqueado",
       driveLink: "https://drive.google.com/drive/folders/1ixZsbSU66l07gddQrIZdpxXxhQHZCmRj",
-      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/GIY20ZCL4A",
+      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/GIY20ZCL4A?utm_source=app",
     },
     {
       id: 5,
@@ -119,7 +119,18 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
       thumbnail: userData?.produto5 ? "/images/kitalmofadas.png" : "/images/bloqueadoalmofadas.png",
       status: userData?.produto5 ? "disponivel" : "bloqueado",
       driveLink: "https://drive.google.com/drive/folders/1m7wzLnLfMrERTD_RA_3977neBEEgQ9gJ?hl=pt-br",
-      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/6J0Q2NRCW9",
+      paymentLink: "https://artes-para-caneca.pay.yampi.com.br/r/6J0Q2NRCW9?utm_source=app",
+    },
+    // ✅ Novo módulo do WhatsApp
+    {
+      id: 6,
+      title: "Comunidade Exclusiva no WhatsApp",
+      description: "Entre para a comunidade exclusiva de membros e compartilhe experiências",
+      category: "whatsapp",
+      thumbnail: "/images/whatsapp.png",
+      status: "disponivel", // sempre disponível
+      driveLink: "https://chat.whatsapp.com/I9jrvwxmpOFH0dieZeELzL", // link direto da comunidade
+      paymentLink: "", // não precisa
     },
   ]
 
@@ -130,6 +141,7 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
     { id: "3d", name: "Artes Exclusivas e 3d", icon: Users, count: modules.filter((m) => m.category === "3d").length },
     { id: "camisas", name: "Kit 40 Mil Estampas Para Camisas", icon: Users, count: modules.filter((m) => m.category === "camisas").length },
     { id: "almofadas", name: "Kit 7 Mil Estampas Para Almofadas", icon: Users, count: modules.filter((m) => m.category === "almofadas").length },
+    { id: "whatsapp", name: "Comunidade WhatsApp", icon: MessageCircle, count: 1 },
   ]
 
   const filteredModules = selectedCategory === "todos" ? modules : modules.filter((m) => m.category === selectedCategory)
@@ -245,7 +257,7 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
                     {module.status === "bloqueado" ? <Lock className="h-8 w-8 text-white" /> : <Play className="h-8 w-8 text-white" />}
                   </div>
                   <Badge className="absolute top-2 right-2" variant={module.status === "disponivel" ? "default" : "secondary"} style={module.status === "disponivel" ? { backgroundColor: "#9333ea", color: "white" } : {}}>
-                    {module.status === "disponivel" ? <><CheckCircle className="w-3 h-3 mr-1" />Disponível</> : <><Lock className="w-3 h-3 mr-1" />Bloqueado</>}
+                    {module.status === "disponivel" ? <><CheckCircle className="w-3 h-3 mr-1" />Disponível</> : <><Lock className="w-3 h-3 mr-1" />Bloqueado</> }
                   </Badge>
                 </div>
 
@@ -263,7 +275,8 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
                       </Button>
                     ) : (
                       <Button className="w-full bg-purple-600 hover:bg-purple-700" size="sm" onClick={() => handleAccessClick(module.id, module.driveLink)}>
-                        Acessar
+                        {module.category === "whatsapp" ? <MessageCircle className="mr-2 h-4 w-4" /> : <Play className="mr-2 h-4 w-4" />}
+                        {module.category === "whatsapp" ? "Entrar no Grupo" : "Acessar"}
                       </Button>
                     )}
                   </div>
@@ -282,15 +295,9 @@ export default function Component({ userEmail, userData: initialUserData }: Comp
             <DialogDescription>Selecione a parte que deseja acessar do pacote de 45 mil artes.</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3">
-            <Button onClick={() => window.open("https://drive.google.com/drive/u/1/folders/1zvEZPrFXOy9XRXmFklw6TUAvTKSBXt-6", "_blank")}>
-              Parte 1
-            </Button>
-            <Button onClick={() => window.open("https://docs.google.com/spreadsheets/d/1RUkvBUqKYDmH3FxqAwqJdvBfa9bwX48qhGUGsDWzc9U/edit?gid=426775527#gid=426775527", "_blank")}>
-              Parte 2
-            </Button>
-            <Button onClick={() => window.open("https://drive.google.com/drive/u/2/folders/1-rNNoqp6-J9XBrlLiQySYz2ILivh_5jS", "_blank")}>
-              Parte 3
-            </Button>
+            <Button onClick={() => window.open("https://drive.google.com/drive/u/1/folders/1zvEZPrFXOy9XRXmFklw6TUAvTKSBXt-6", "_blank")}>Parte 1</Button>
+            <Button onClick={() => window.open("https://docs.google.com/spreadsheets/d/1RUkvBUqKYDmH3FxqAwqJdvBfa9bwX48qhGUGsDWzc9U/edit?gid=426775527#gid=426775527", "_blank")}>Parte 2</Button>
+            <Button onClick={() => window.open("https://drive.google.com/drive/u/2/folders/1-rNNoqp6-J9XBrlLiQySYz2ILivh_5jS", "_blank")}>Parte 3</Button>
           </div>
         </DialogContent>
       </Dialog>
